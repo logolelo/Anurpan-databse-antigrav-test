@@ -36,6 +36,10 @@ const Index = () => {
             "areaServed": "IN",
             "availableLanguage": ["en"]
           }
+        ],
+        "sameAs": [
+          "https://www.instagram.com/anurpan_jewellery/",
+          "https://www.facebook.com/people/Anurpan-Jewellery/100086367500000/"
         ]
       },
       {

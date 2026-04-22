@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 const PREVIEW_PORT = 4317;
 const BASE_URL = `http://localhost:${PREVIEW_PORT}`;
 const OUTPUT_DIR = path.join(__dirname, '..', 'dist');
-const RENDER_DELAY = 2500;
+const RENDER_DELAY = 4000; // 4 seconds delay to ensure dynamic content is loaded
 
 async function getProductHandles() {
   const shopifyDomain = process.env.VITE_SHOPIFY_STORE_DOMAIN;
@@ -122,6 +122,17 @@ async function prerender() {
 
     try {
       await page.goto(url, { waitUntil: 'networkidle', timeout: 45000 });
+
+      // Safety net for product pages: wait for product content to actually appear
+      if (route.startsWith('/product/')) {
+        try {
+          // Wait for the main product info container or title
+          await page.waitForSelector('h1', { timeout: 5000 });
+        } catch (e) {
+          console.warn(`⚠️ Warning: Selector not found for ${route}, proceeding anyway.`);
+        }
+      }
+
       await page.waitForTimeout(RENDER_DELAY);
 
       const html = await page.content();

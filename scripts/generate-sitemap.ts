@@ -67,9 +67,12 @@ async function generateSitemap() {
   ];
 
   const today = new Date().toISOString().split('T')[0];
+  // Use a fixed date for static routes to avoid unnecessary re-indexing on every build
+  const staticLastMod = '2024-04-20';
+
   const staticEntries = staticRoutes.map((route) => ({
     route,
-    lastmod: today,
+    lastmod: staticLastMod,
     priority: route === '' ? '1.0' : '0.8',
   }));
   const productEntries = productMetadata.map((product) => ({
@@ -87,7 +90,7 @@ async function generateSitemap() {
   <url>
     <loc>${url}</loc>
     <lastmod>${lastmod}</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>${priority}</priority>
   </url>`;
   }).join('')}

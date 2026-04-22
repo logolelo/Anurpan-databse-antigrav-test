@@ -16,7 +16,7 @@ const AboutUs = () => {
     "publisher": {
       "@type": "Organization",
       "name": "Anurpan Jewellery",
-      "logo": "https://anurpanjewellery.com/Logo_Anurpan_Black_1.svg"
+      "logo": "https://anurpanjewellery.com/Anurpan Jewellery Logo.png"
     }
   };
 
