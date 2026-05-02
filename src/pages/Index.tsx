@@ -45,6 +45,7 @@ const Index = () => {
       {
         "@type": "WebSite",
         "name": "Anurpan Jewellery",
+        "alternateName": "Anurpan",
         "url": "https://anurpanjewellery.com/",
         "potentialAction": {
           "@type": "SearchAction",

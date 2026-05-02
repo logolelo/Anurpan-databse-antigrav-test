@@ -149,6 +149,14 @@ async function prerender() {
       
       const outputPath = path.join(OUTPUT_DIR, routeFile);
 
+      // INCREMENTAL BUILD: skip product pages whose HTML already exists in dist/
+      // This avoids re-prerendering 100+ products on every build unless needed.
+      // To force a full rebuild, delete dist/ before running npm run build.
+      if (fs.existsSync(outputPath)) {
+        console.log(`⏭️  Skipping (already exists): ${outputPath}`);
+        continue;
+      }
+
       fs.mkdirSync(path.dirname(outputPath), { recursive: true });
       fs.writeFileSync(outputPath, html);
       console.log(`✅ Saved: ${outputPath}`);

@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import SEO from '@/components/SEO';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 const RefundPolicy = () => {
   const seoTitle = "Refund Policy — Anurpan Jewellery";
@@ -17,7 +18,8 @@ const RefundPolicy = () => {
       />
       <Navbar />
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-10 lg:py-14">
+        <div className="container mx-auto px-4 py-10 lg:py-16">
+          <Breadcrumbs steps={[{ label: 'Refund Policy', active: true }]} hideVisual={true} />
           <h1 className="font-display text-3xl lg:text-4xl font-bold text-foreground mb-8">Refund Policy</h1>
           <div className="prose prose-sm lg:prose lg:max-w-none text-muted-foreground max-w-4xl">
             <p className="mb-6">

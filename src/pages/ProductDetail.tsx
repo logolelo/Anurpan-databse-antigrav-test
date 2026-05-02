@@ -9,8 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ShoppingCart, Minus, Plus, Loader2, Check } from 'lucide-react';
 import { toast } from 'sonner';
-import { CATEGORIES } from '@/lib/constants';
+import { CATEGORIES, type MainCategory } from '@/lib/constants';
 import SEO from '@/components/SEO';
+import { Breadcrumbs, type BreadcrumbStep } from '@/components/Breadcrumbs';
+import { ProductReviews } from '@/components/ProductReviews';
 
 const ProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
@@ -133,39 +135,37 @@ const ProductDetail = () => {
       "name": "Anurpan Jewellery"
     }
   };
-  const breadcrumbJsonLd = {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://anurpanjewellery.com/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Products",
-        "item": "https://anurpanjewellery.com/products"
-      },
-      ...(productCategory ? [{
-        "@type": "ListItem",
-        "position": 3,
-        "name": productCategory,
-        "item": `https://anurpanjewellery.com/products?category=${encodeURIComponent(productCategory)}`
-      }] : []),
-      {
-        "@type": "ListItem",
-        "position": productCategory ? 4 : 3,
-        "name": product.title,
-        "item": canonicalUrl
-      }
-    ]
-  };
+
   const seoJsonLd = {
     "@context": "https://schema.org",
-    "@graph": [productJsonLd, breadcrumbJsonLd]
+    "@graph": [productJsonLd]
   };
+
+  // Build Breadcrumb steps
+  const breadcrumbSteps: BreadcrumbStep[] = [
+    { label: 'Products', href: '/products' }
+  ];
+
+  if (productCategory) {
+    breadcrumbSteps.push({ 
+      label: productCategory, 
+      href: `/products?category=${encodeURIComponent(productCategory)}` 
+    });
+  }
+
+  // Add subcategory if available (using productType as it often maps to our subcategories)
+  const productSubcategory = product.productType;
+  if (productSubcategory && productSubcategory !== productCategory) {
+    breadcrumbSteps.push({ 
+      label: productSubcategory, 
+      href: `/products?${new URLSearchParams({
+        ...(productCategory ? { category: productCategory } : {}),
+        sub: productSubcategory
+      }).toString()}`
+    });
+  }
+
+  breadcrumbSteps.push({ label: product.title, active: true });
 
   const compareAt = selectedVariant?.compareAtPrice ? parseFloat(selectedVariant.compareAtPrice.amount) : null;
   const hasDiscount = !!(compareAt && compareAt > price && compareAt > 0);
@@ -215,31 +215,7 @@ const ProductDetail = () => {
       <Navbar />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8 lg:py-12">
-          {/* Breadcrumb */}
-          <nav className="text-sm text-muted-foreground mb-6 flex items-center flex-wrap gap-y-1">
-            <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-            {source ? (
-              <>
-                <span className="mx-2 text-muted-foreground/50">/</span>
-                <span className="text-foreground/70">{source}</span>
-              </>
-            ) : (
-              <>
-                <span className="mx-2 text-muted-foreground/50">/</span>
-                <Link to="/products" className="hover:text-primary transition-colors">Products</Link>
-              </>
-            )}
-            {productCategory && (
-              <>
-                <span className="mx-2 text-muted-foreground/50">/</span>
-                <Link to={`/products?category=${encodeURIComponent(productCategory)}`} className="hover:text-primary transition-colors">
-                  {productCategory}
-                </Link>
-              </>
-            )}
-            <span className="mx-2 text-muted-foreground/50">/</span>
-            <span className="text-foreground font-medium truncate max-w-[200px] md:max-w-none">{product.title}</span>
-          </nav>
+          <Breadcrumbs steps={breadcrumbSteps} />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Images */}
@@ -378,6 +354,7 @@ const ProductDetail = () => {
               <Tabs defaultValue="details" className="mt-8">
                 <TabsList className="w-full">
                   <TabsTrigger value="details" className="flex-1">Product Details</TabsTrigger>
+                  <TabsTrigger value="reviews" className="flex-1">Reviews</TabsTrigger>
                   <TabsTrigger value="refund" className="flex-1">Refund Policy</TabsTrigger>
                   <TabsTrigger value="delivery" className="flex-1">Delivery Info</TabsTrigger>
                 </TabsList>
@@ -385,6 +362,9 @@ const ProductDetail = () => {
                   <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
                     {productDetailsText}
                   </p>
+                </TabsContent>
+                <TabsContent value="reviews" className="mt-4">
+                  <ProductReviews productId={product.id} productName={product.title} />
                 </TabsContent>
                 <TabsContent value="refund" className="mt-4">
                   <p className="text-muted-foreground leading-relaxed">

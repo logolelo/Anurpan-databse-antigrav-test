@@ -31,6 +31,7 @@ const SEO: React.FC<SEOProps> = ({
       {canonical && <link rel="canonical" href={canonical} />}
       {noindex && <meta name="robots" content="noindex,nofollow" />}
       <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="Anurpan Jewellery" />
       <meta property="og:title" content={resolvedOgTitle} />
       {resolvedOgDescription && <meta property="og:description" content={resolvedOgDescription} />}
       {canonical && <meta property="og:url" content={canonical} />}

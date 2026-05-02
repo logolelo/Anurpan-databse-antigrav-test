@@ -2,6 +2,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Sparkles, ShieldCheck, Heart, Zap } from 'lucide-react';
 import SEO from '@/components/SEO';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 const AboutUs = () => {
   const seoTitle = "About Anurpan Jewellery";
@@ -34,8 +35,12 @@ const AboutUs = () => {
         {/* Hero Section */}
         <section className="relative py-12 lg:py-20 overflow-hidden bg-primary text-primary-foreground">
           <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-secondary/10 rounded-full blur-3xl opacity-50"></div>
-          <div className="container mx-auto px-4 relative z-10 text-center">
-            <div className="max-w-3xl mx-auto">
+          <div className="container mx-auto px-4 relative z-10">
+            <Breadcrumbs 
+              steps={[{ label: 'About Us', active: true }]} 
+              hideVisual={true}
+            />
+            <div className="text-center max-w-3xl mx-auto">
               <h1 className="font-display text-4xl lg:text-5xl font-bold mb-6 leading-tight">
                 Crafting Elegance for the <span className="text-secondary">Modern Woman</span>
               </h1>

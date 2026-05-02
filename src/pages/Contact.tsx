@@ -2,6 +2,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Mail, MapPin, MessageSquare, Phone } from 'lucide-react';
 import SEO from '@/components/SEO';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 const Contact = () => {
   const seoTitle = "Contact Us — Anurpan Jewellery";
@@ -40,8 +41,9 @@ const Contact = () => {
       />
       <Navbar />
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-10 lg:py-20">
+        <div className="container mx-auto px-4 py-10 lg:py-16">
           <div className="max-w-4xl mx-auto">
+            <Breadcrumbs steps={[{ label: 'Contact Us', active: true }]} hideVisual={true} />
             <div className="text-center mb-12 lg:mb-16">
               <h1 className="font-display text-4xl lg:text-5xl font-bold text-foreground mb-4">Contact Us</h1>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">

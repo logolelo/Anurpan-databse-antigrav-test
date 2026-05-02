@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import SEO from '@/components/SEO';
+import { Breadcrumbs, type BreadcrumbStep } from '@/components/Breadcrumbs';
 
 type SortOption = 'price-low' | 'price-high' | 'alpha-asc' | 'alpha-desc' | 'newest' | 'best-sellers' | 'new-arrivals';
 
@@ -180,39 +181,41 @@ const Products = () => {
   const seoDescription = `Browse our collection of ${pageTitle.toLowerCase()} at Anurpan Jewellery. Find exquisite Silver 925 and imitation jewellery.`;
   const canonicalUrl = "https://anurpanjewellery.com/products";
   const hasActiveFilters = Boolean(category || sub || collection || special || q);
-  const breadcrumbJsonLd = (category || sub) ? {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://anurpanjewellery.com/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Products",
-        "item": "https://anurpanjewellery.com/products"
-      },
-      ...(category ? [{
-        "@type": "ListItem",
-        "position": 3,
-        "name": category,
-        "item": `https://anurpanjewellery.com/products?category=${encodeURIComponent(category)}`
-      }] : []),
-      ...(sub ? [{
-        "@type": "ListItem",
-        "position": category ? 4 : 3,
-        "name": sub,
-        "item": `https://anurpanjewellery.com/products?${new URLSearchParams({
-          ...(category ? { category } : {}),
-          sub,
-        }).toString()}`
-      }] : []),
-    ]
-  } : undefined;
+  
+  // Build Breadcrumb steps
+  const breadcrumbSteps: BreadcrumbStep[] = [
+    { label: 'Products', href: '/products', active: !hasActiveFilters }
+  ];
+
+  if (category) {
+    breadcrumbSteps.push({ 
+      label: category, 
+      href: `/products?category=${encodeURIComponent(category)}`,
+      active: !sub
+    });
+  }
+
+  if (sub) {
+    breadcrumbSteps.push({ 
+      label: sub, 
+      active: true 
+    });
+  } else if (collection) {
+    breadcrumbSteps.push({ 
+      label: collection, 
+      active: true 
+    });
+  } else if (special) {
+    breadcrumbSteps.push({ 
+      label: special, 
+      active: true 
+    });
+  } else if (q) {
+    breadcrumbSteps.push({ 
+      label: `Search: ${q}`, 
+      active: true 
+    });
+  }
 
   const FilterContent = () => (
     <div className="space-y-8">
@@ -302,7 +305,6 @@ const Products = () => {
         canonical={canonicalUrl}
         ogImage="https://anurpanjewellery.com/Anurpan Jewellery Logo.png"
         noindex={hasActiveFilters}
-        jsonLd={breadcrumbJsonLd}
       />
       <Navbar />
       <main className="flex-1 bg-background">
@@ -310,40 +312,7 @@ const Products = () => {
           {/* Header Section */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
-              <nav className="text-sm text-muted-foreground mb-2 flex items-center flex-wrap gap-y-1">
-                <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-                <span className="mx-2 text-muted-foreground/50">/</span>
-                {special || collection || category || sub || q ? (
-                  <>
-                    <Link to="/products" className="hover:text-primary transition-colors">Products</Link>
-                    {category && (
-                      <>
-                        <span className="mx-2 text-muted-foreground/50">/</span>
-                        <button 
-                          onClick={() => updateFilter('sub', null)}
-                          className="hover:text-primary transition-colors"
-                        >
-                          {category}
-                        </button>
-                      </>
-                    )}
-                    {sub && (
-                      <>
-                        <span className="mx-2 text-muted-foreground/50">/</span>
-                        <span className="text-foreground/70">{sub}</span>
-                      </>
-                    )}
-                    {(special || collection || q) && (
-                      <>
-                        <span className="mx-2 text-muted-foreground/50">/</span>
-                        <span className="text-foreground font-medium">{special || collection || (q ? `Search: ${q}` : '')}</span>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <span className="text-foreground font-medium">All Products</span>
-                )}
-              </nav>
+              <Breadcrumbs steps={breadcrumbSteps} className="mb-2" />
               <h1 className="font-display text-3xl lg:text-4xl font-bold text-foreground">{pageTitle}</h1>
             </div>
 
