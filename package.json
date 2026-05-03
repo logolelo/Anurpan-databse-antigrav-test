@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "prebuild": "ts-node scripts/generate-sitemap.ts",
-    "postbuild": "ts-node scripts/prerender.ts",
     "build:dev": "vite build --mode development",
+    "prebuild": "ts-node scripts/generate-sitemap.ts",
+    "postbuild": "npx playwright install chromium && ts-node scripts/prerender.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
