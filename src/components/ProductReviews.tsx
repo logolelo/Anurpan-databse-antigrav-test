@@ -3,6 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Star, User } from 'lucide-react';
 import { toast } from 'sonner';
+import { isAuthenticated } from '@/lib/auth';
+import { customerAccountRequest, CUSTOMER_ORDERS_QUERY } from '@/lib/customerAccount';
 
 interface Review {
   id: string;
@@ -24,6 +26,43 @@ export const ProductReviews = ({ productId }: { productId: string }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [reviewerName, setReviewerName] = useState('');
+
+  const [canReview, setCanReview] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    const checkPurchase = async () => {
+      if (!isAuthenticated()) {
+        setAuthChecked(true);
+        return;
+      }
+      try {
+        const data = await customerAccountRequest(CUSTOMER_ORDERS_QUERY, { first: 50 });
+        type OrderEdge = { node: { lineItems?: { nodes?: { productId?: string | number }[] } } };
+        const orders = (data as { data?: { customer?: { orders?: { edges?: OrderEdge[] } } } })?.data?.customer?.orders?.edges?.map(e => e.node) || [];
+        
+        let hasPurchased = false;
+        for (const order of orders) {
+          const items = order.lineItems?.nodes || [];
+          for (const item of items) {
+            const rawCurrentId = productId.split('/').pop();
+            const rawItemId = item.productId ? String(item.productId).split('/').pop() : '';
+            if (rawCurrentId === rawItemId && rawCurrentId) {
+              hasPurchased = true;
+              break;
+            }
+          }
+          if (hasPurchased) break;
+        }
+        setCanReview(hasPurchased);
+      } catch (err) {
+        console.error("Error checking purchases:", err);
+      } finally {
+        setAuthChecked(true);
+      }
+    };
+    checkPurchase();
+  }, [productId]);
 
   const fetchReviews = useCallback(async () => {
     try {
@@ -118,9 +157,20 @@ export const ProductReviews = ({ productId }: { productId: string }) => {
             <span className="text-muted-foreground">({reviews.length} reviews)</span>
           </div>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} variant={showForm ? "outline" : "default"} className="rounded-xl">
-          {showForm ? 'Cancel Review' : 'Write a Review'}
-        </Button>
+        {authChecked ? (
+          canReview ? (
+            <Button onClick={() => setShowForm(!showForm)} variant={showForm ? "outline" : "default"} className="rounded-xl">
+              {showForm ? 'Cancel Review' : 'Write a Review'}
+            </Button>
+          ) : (
+            <div className="text-sm text-muted-foreground bg-muted px-4 py-2 rounded-xl flex items-center gap-2">
+              <User className="w-4 h-4" />
+              Verified buyers only
+            </div>
+          )
+        ) : (
+          <div className="h-10 w-32 bg-muted animate-pulse rounded-xl" />
+        )}
       </div>
 
       {showForm && (
@@ -232,9 +282,20 @@ export const ProductReviews = ({ productId }: { productId: string }) => {
           <Star className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">No reviews yet</h3>
           <p className="text-muted-foreground max-w-sm mx-auto mb-6">Be the first to share your thoughts about this beautiful piece of jewellery.</p>
-          <Button variant="outline" onClick={() => setShowForm(true)} className="rounded-xl">
-            Write the first review
-          </Button>
+          {authChecked ? (
+            canReview ? (
+              <Button variant="outline" onClick={() => setShowForm(true)} className="rounded-xl">
+                Write the first review
+              </Button>
+            ) : (
+              <div className="text-sm text-muted-foreground bg-muted px-4 py-2 rounded-xl mx-auto w-fit mt-4 flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Only verified buyers can leave a review
+              </div>
+            )
+          ) : (
+            <div className="h-10 w-48 bg-muted animate-pulse rounded-xl mx-auto" />
+          )}
         </div>
       )}
     </div>
