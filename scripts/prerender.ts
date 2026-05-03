@@ -79,6 +79,12 @@ async function waitForServer(url: string, maxRetries = 20) {
 async function prerender() {
   console.log('🚀 Starting automated prerender process...');
 
+  if (process.env.VERCEL === '1') {
+    console.log('⚠️ Running on Vercel detected. Skipping Playwright prerender because Vercel build environments do not support installing full Chromium dependencies.');
+    console.log('💡 The site will be deployed as a standard Single Page Application (SPA).');
+    return;
+  }
+
   const productHandles = await getProductHandles();
   const productRoutes = productHandles.map((handle: string) => `/product/${handle}`);
   const routes = [...staticRoutes, ...productRoutes];
