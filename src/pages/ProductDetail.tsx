@@ -271,7 +271,7 @@ const ProductDetail = () => {
               </div>
               <h1 className="font-display text-3xl lg:text-4xl font-bold text-foreground mb-2">{product.title}</h1>
               
-              <div className="flex flex-col gap-3 mb-6">
+              <div className="flex flex-col mb-6">
                 <ProductSignals productId={product.id} />
                 {selectedVariant?.sku && (
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">SKU: {selectedVariant.sku}</p>
