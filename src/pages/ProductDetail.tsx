@@ -359,7 +359,7 @@ const ProductDetail = () => {
                 size="lg"
                 className="w-full rounded-xl bg-primary hover:bg-primary/90 text-lg font-semibold py-6"
               >
-                {cartLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <><ShoppingCart className="h-5 w-5 mr-2" />Add to Cart — ₹{(price * quantity).toFixed(0)}</>}
+                {cartLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <><ShoppingCart className="h-5 w-5 mr-2" />Add to Cart</>}
               </Button>
 
               {/* Tabs */}
