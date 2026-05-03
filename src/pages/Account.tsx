@@ -365,17 +365,12 @@ export default function Account() {
                   ))}
                 </div>
               ) : (
-                <>
-                  <p className="text-muted-foreground">No orders found.</p>
-                  <div className="mt-4 p-4 bg-muted rounded-md text-xs space-y-1">
-                    <p><strong>Debug Info:</strong></p>
-                    <p>Endpoint: {getCustomerAccountEndpoint() || "not set"}</p>
-                    <p>Authenticated: {authed ? "Yes" : "No"}</p>
-                    <p>Has Access Token: {localStorage.getItem("customer_access_token") ? "Yes" : "No"}</p>
-                    <p>Has ID Token: {localStorage.getItem("customer_id_token") ? "Yes" : "No"}</p>
-                    {claims && <p>ID Token Claims: {JSON.stringify(claims).slice(0, 100)}...</p>}
-                  </div>
-                </>
+                <div className="space-y-4 py-8">
+                  <p className="text-muted-foreground">You haven't placed any orders yet.</p>
+                  <Button asChild variant="outline">
+                    <Link to="/products">Continue Shopping</Link>
+                  </Button>
+                </div>
               )}
             </div>
           </div>
