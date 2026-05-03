@@ -1,21 +1,26 @@
 const CUSTOMER_ACCOUNT_GRAPHQL_URL = import.meta.env.VITE_CUSTOMER_ACCOUNT_GRAPHQL_URL as string | undefined;
-const STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN as string | undefined;
-const DEFAULT_GRAPHQL_URL = STORE_DOMAIN ? `https://${STORE_DOMAIN}/customer/api/graphql` : undefined;
-const PROXY_PATH = '/api/customer-account';
+const AUTH_URL = import.meta.env.VITE_CUSTOMER_AUTH_AUTH_URL as string | undefined;
+const API_VERSION = import.meta.env.VITE_SHOPIFY_API_VERSION as string || "2024-07";
+
+let computedEndpoint: string | null = null;
+if (CUSTOMER_ACCOUNT_GRAPHQL_URL) {
+  computedEndpoint = CUSTOMER_ACCOUNT_GRAPHQL_URL;
+} else if (AUTH_URL) {
+  const match = AUTH_URL.match(/\/authentication\/(\d+)\//);
+  if (match && match[1]) {
+    computedEndpoint = `https://shopify.com/${match[1]}/account/customer/api/${API_VERSION}/graphql`;
+  }
+}
 
 export async function customerAccountRequest(query: string, variables: Record<string, unknown> = {}) {
   const token = localStorage.getItem("customer_access_token");
-  const endpoint = typeof window !== 'undefined' ? `${window.location.origin}${PROXY_PATH}` : CUSTOMER_ACCOUNT_GRAPHQL_URL || DEFAULT_GRAPHQL_URL;
+  const endpoint = computedEndpoint;
   if (!token || !endpoint) return null;
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    'Authorization': token,
   };
-  if (endpoint.includes('/api/customer-account')) {
-    headers['Authorization'] = token;
-  } else {
-    headers['X-Shopify-Access-Token'] = token;
-  }
   const res = await fetch(endpoint, {
     method: "POST",
     headers,
@@ -171,8 +176,5 @@ export const CUSTOMER_ORDER_QUERY = `
 `;
 
 export function getCustomerAccountEndpoint() {
-  if (typeof window !== 'undefined') {
-    return `${window.location.origin}${PROXY_PATH}`;
-  }
-  return CUSTOMER_ACCOUNT_GRAPHQL_URL || DEFAULT_GRAPHQL_URL || null;
+  return computedEndpoint;
 }

@@ -52,16 +52,20 @@ export async function handleCallback() {
   if (!code || !verifier) return false;
 
   try {
-    const res = await fetch("/api/token", {
+    const body = new URLSearchParams();
+    body.set("grant_type", "authorization_code");
+    body.set("code", code);
+    body.set("client_id", CLIENT_ID);
+    body.set("redirect_uri", REDIRECT_URI);
+    body.set("code_verifier", verifier);
+
+    const res = await fetch(TOKEN_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        grant_type: "authorization_code",
-        code,
-        client_id: CLIENT_ID,
-        redirect_uri: REDIRECT_URI,
-        code_verifier: verifier,
-      }),
+      headers: { 
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json"
+      },
+      body: body.toString(),
     });
 
     if (!res.ok) {
