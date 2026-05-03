@@ -13,6 +13,8 @@ import { CATEGORIES, type MainCategory } from '@/lib/constants';
 import SEO from '@/components/SEO';
 import { Breadcrumbs, type BreadcrumbStep } from '@/components/Breadcrumbs';
 import { ProductReviews } from '@/components/ProductReviews';
+import { trackEvent } from '@/lib/tracking';
+import { ProductSignals } from '@/components/ProductSignals';
 
 const ProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
@@ -64,6 +66,12 @@ const ProductDetail = () => {
       navigate(`/product/${encodeURIComponent(matchByTitle.node.handle)}`, { replace: true });
     }
   }, [catalogProducts, handle, isLoading, navigate, product]);
+
+  useEffect(() => {
+    if (product?.id) {
+      trackEvent('product_view', product.id);
+    }
+  }, [product?.id]);
 
   if (isLoading) {
     return (
@@ -200,6 +208,7 @@ const ProductDetail = () => {
       selectedOptions: selectedVariant.selectedOptions || [],
       quantityAvailable: selectedVariant.quantityAvailable ?? null,
     });
+    trackEvent('add_to_cart', product.id);
     toast.success('Added to cart', { description: `${product.title} × ${quantity}`, position: 'top-center' });
   };
 
@@ -260,7 +269,9 @@ const ProductDetail = () => {
                   </span>
                 )}
               </div>
-              <h1 className="font-display text-3xl lg:text-4xl font-bold text-foreground mb-4">{product.title}</h1>
+              <h1 className="font-display text-3xl lg:text-4xl font-bold text-foreground mb-2">{product.title}</h1>
+              
+              <ProductSignals productId={product.id} />
 
               {selectedVariant?.sku && (
                 <p className="text-xs text-muted-foreground mb-4 uppercase tracking-wider font-medium">SKU: {selectedVariant.sku}</p>
