@@ -354,7 +354,6 @@ const ProductDetail = () => {
               <Tabs defaultValue="details" className="mt-8">
                 <TabsList className="w-full">
                   <TabsTrigger value="details" className="flex-1">Product Details</TabsTrigger>
-                  <TabsTrigger value="reviews" className="flex-1">Reviews</TabsTrigger>
                   <TabsTrigger value="refund" className="flex-1">Refund Policy</TabsTrigger>
                   <TabsTrigger value="delivery" className="flex-1">Delivery Info</TabsTrigger>
                 </TabsList>
@@ -362,9 +361,6 @@ const ProductDetail = () => {
                   <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
                     {productDetailsText}
                   </p>
-                </TabsContent>
-                <TabsContent value="reviews" className="mt-4">
-                  <ProductReviews productId={product.id} productName={product.title} />
                 </TabsContent>
                 <TabsContent value="refund" className="mt-4">
                   <p className="text-muted-foreground leading-relaxed">
@@ -379,6 +375,8 @@ const ProductDetail = () => {
               </Tabs>
             </div>
           </div>
+
+          <ProductReviews productId={product.id} />
         </div>
 
         {/* Similar Products */}
