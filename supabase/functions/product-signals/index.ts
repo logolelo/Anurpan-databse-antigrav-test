@@ -20,8 +20,8 @@ serve(async (req: Request) => {
   }
 
   try {
-    const url = new URL(req.url);
-    const product_id = url.searchParams.get("product_id");
+    const body = await req.json().catch(() => ({}));
+    const product_id = body.product_id;
 
     if (!product_id) {
       return new Response(JSON.stringify({ error: "Missing product_id" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });

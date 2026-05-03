@@ -18,8 +18,7 @@ export function useProductSignals(productId: string) {
     const fetchSignals = async () => {
       try {
         const { data, error } = await supabase.functions.invoke('product-signals', {
-          method: 'GET',
-          query: { product_id: productId }
+          body: { product_id: productId }
         });
 
         if (error) throw error;
