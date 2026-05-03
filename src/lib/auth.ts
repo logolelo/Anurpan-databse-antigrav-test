@@ -2,9 +2,7 @@ const CLIENT_ID = (import.meta.env.VITE_CUSTOMER_AUTH_CLIENT_ID as string) || ""
 const AUTH_URL = ((import.meta.env.VITE_CUSTOMER_AUTH_AUTH_URL as string) || "").replace(/[`'"]/g, "");
 const TOKEN_URL = ((import.meta.env.VITE_CUSTOMER_AUTH_TOKEN_URL as string) || "").replace(/[`'"]/g, "");
 const LOGOUT_URL = ((import.meta.env.VITE_CUSTOMER_AUTH_LOGOUT_URL as string) || "").replace(/[`'"]/g, "");
-const REDIRECT_URI =
-  ((import.meta.env.VITE_CUSTOMER_AUTH_REDIRECT_URI as string) ||
-    `${typeof window !== "undefined" ? window.location.origin : "http://localhost:8080"}/auth/callback`).replace(/[`'"]/g, "");
+const REDIRECT_URI = `${typeof window !== "undefined" ? window.location.origin : "http://localhost:8080"}/auth/callback`;
 const SCOPES =
   (import.meta.env.VITE_CUSTOMER_AUTH_SCOPES as string || "openid email customer-account-api:full")
     .replace(/[`'"]/g, "")
