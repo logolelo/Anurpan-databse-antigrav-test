@@ -180,7 +180,20 @@ const ProductDetail = () => {
 
   const maxStock = selectedVariant?.quantityAvailable ?? 0;
   const inStock = selectedVariant?.availableForSale ?? false;
-  const lowStock = inStock && maxStock > 0 && maxStock <= 10;
+  const lowStock = inStock && maxStock > 0 && maxStock <= 7;
+
+  const getStockMessage = () => {
+    if (!inStock) return 'Out of Stock';
+    if (!lowStock) return 'In Stock';
+    
+    // 5-7: Show "only few left"
+    if (maxStock >= 5 && maxStock <= 7) {
+      return 'In stock — only few left';
+    }
+    
+    // 1-4: Show exact count
+    return `In stock — only ${maxStock} left`;
+  };
   const handleQuantityChange = (delta: number) => {
     const newQty = quantity + delta;
     if (newQty < 1) return;
@@ -291,15 +304,15 @@ const ProductDetail = () => {
 
               {/* Availability */}
               <div className="flex items-center gap-2 mb-6">
-                {selectedVariant?.availableForSale ? (
+                {inStock ? (
                   <>
                     <Check className={`h-4 w-4 ${lowStock ? 'text-amber-600' : 'text-green-600'}`} />
                     <span className={`text-sm font-medium ${lowStock ? 'text-amber-600' : 'text-green-600'}`}>
-                      {lowStock ? `In stock — only ${maxStock} left` : 'In Stock'}
+                      {getStockMessage()}
                     </span>
                   </>
                 ) : (
-                  <span className="text-sm text-destructive font-medium">Out of Stock</span>
+                  <span className="text-sm text-destructive font-medium uppercase tracking-wider">Out of Stock</span>
                 )}
               </div>
 
@@ -330,25 +343,30 @@ const ProductDetail = () => {
               {/* Quantity */}
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-3">
-                  <p className="text-sm font-medium text-foreground">Quantity</p>
-                  {maxStock > 0 && quantity >= maxStock && (
-                    <span className="text-xs font-medium text-destructive animate-pulse">Max stock reached</span>
-                  )}
+                  <p className="text-sm font-medium text-foreground uppercase tracking-wider">Quantity</p>
                 </div>
-                <div className="flex items-center gap-4 bg-muted/30 w-fit p-1.5 rounded-xl border border-border">
-                  <Button variant="outline" size="icon" className="rounded-lg h-9 w-9" onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1}>
-                    <Minus className="h-4 w-4" />
-                  </Button>
-                  <span className="w-10 text-center font-semibold text-lg">{quantity}</span>
-                  <Button 
-                    variant="outline" 
-                    size="icon" 
-                    className="rounded-lg h-9 w-9" 
-                    onClick={() => handleQuantityChange(1)}
-                    disabled={maxStock ? quantity >= maxStock : false}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-4 bg-muted/30 w-fit p-1.5 rounded-xl border border-border">
+                    <Button variant="outline" size="icon" className="rounded-lg h-9 w-9 bg-background hover:bg-muted transition-colors" onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1}>
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-10 text-center font-semibold text-lg tabular-nums">{quantity}</span>
+                    <Button 
+                      variant="outline" 
+                      size="icon" 
+                      className="rounded-lg h-9 w-9 bg-background hover:bg-muted transition-colors" 
+                      onClick={() => handleQuantityChange(1)}
+                      disabled={maxStock ? quantity >= maxStock : false}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {maxStock > 0 && quantity >= maxStock && (
+                    <div className="flex items-center gap-2 text-[11px] font-bold text-red-600 bg-red-50 px-3 py-1.5 rounded-lg border border-red-200 animate-in fade-in zoom-in slide-in-from-left-2 duration-300 shadow-sm">
+                      MAXIMUM STOCK REACHED
+                    </div>
+                  )}
                 </div>
               </div>
 
