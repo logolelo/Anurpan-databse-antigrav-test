@@ -347,14 +347,14 @@ const ProductDetail = () => {
                 </div>
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-4 bg-muted/30 w-fit p-1.5 rounded-xl border border-border">
-                    <Button variant="outline" size="icon" className="rounded-lg h-9 w-9 bg-background hover:bg-muted transition-colors" onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1}>
+                    <Button variant="outline" size="icon" className="rounded-lg h-9 w-9 bg-background hover:bg-gold hover:text-white hover:border-gold transition-all duration-200" onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1}>
                       <Minus className="h-4 w-4" />
                     </Button>
                     <span className="w-10 text-center font-semibold text-lg tabular-nums">{quantity}</span>
                     <Button 
                       variant="outline" 
                       size="icon" 
-                      className="rounded-lg h-9 w-9 bg-background hover:bg-muted transition-colors" 
+                      className="rounded-lg h-9 w-9 bg-background hover:bg-gold hover:text-white hover:border-gold transition-all duration-200" 
                       onClick={() => handleQuantityChange(1)}
                       disabled={maxStock ? quantity >= maxStock : false}
                     >

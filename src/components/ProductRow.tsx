@@ -64,14 +64,9 @@ export function ProductRow({ title, products, viewMoreLink }: ProductRowProps) {
             <Button variant="outline" size="icon" className="rounded-full h-9 w-9 hidden md:flex" onClick={scrollNext}>
               <ChevronRight className="h-4 w-4" />
             </Button>
-            {viewMoreLink && (
-              <Link to={viewMoreLink}>
-                <Button variant="link" className="text-primary font-medium">View More →</Button>
-              </Link>
-            )}
           </div>
         </div>
-        <div className="overflow-hidden" ref={emblaRef}>
+        <div className="overflow-hidden mb-8" ref={emblaRef}>
           <div className="flex gap-4 lg:gap-6">
             {products.map((product) => (
               <div key={product.node.id} className="flex-[0_0_200px] lg:flex-[0_0_260px] min-w-0">
@@ -80,6 +75,18 @@ export function ProductRow({ title, products, viewMoreLink }: ProductRowProps) {
             ))}
           </div>
         </div>
+        {viewMoreLink && (
+          <div className="flex justify-center mt-8 lg:mt-10">
+            <Link to={viewMoreLink}>
+              <Button 
+                variant="outline" 
+                className="rounded-full px-8 py-6 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 font-semibold"
+              >
+                View All {title.split('—').pop()?.trim() || 'Products'}
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

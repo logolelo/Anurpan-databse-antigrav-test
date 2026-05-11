@@ -39,56 +39,70 @@ export function Navbar() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-80 overflow-y-auto bg-primary border-primary-foreground/10">
+            <SheetContent side="left" className="w-80 flex flex-col bg-primary border-primary-foreground/10">
               <SheetTitle className="font-display text-xl text-secondary">Anurpan Jewellery</SheetTitle>
-              <nav className="mt-6 space-y-4">
-                {isAuthenticated() ? (
-                  <>
-                    <Link to="/account" className="flex items-center gap-2 py-2 text-sm font-medium text-primary-foreground hover:text-secondary transition-colors">
-                      <User className="h-5 w-5" />
-                      {(getIdTokenClaims()?.["name"] as string) || (getIdTokenClaims()?.["email"] as string) || "Account"}
-                    </Link>
-                    <button onClick={() => logout("/")} className="flex items-center gap-2 py-2 text-sm font-medium text-primary-foreground hover:text-secondary transition-colors w-full text-left">
-                      <LogOut className="h-5 w-5" />
-                      Sign out
-                    </button>
-                  </>
-                ) : (
-                  <Link to="/login" className="flex items-center gap-2 py-2 text-sm font-medium text-primary-foreground hover:text-secondary transition-colors">
-                    <User className="h-5 w-5" />
-                    Sign in / Sign up
-                  </Link>
-                )}
-                {(Object.keys(CATEGORIES) as MainCategory[]).map((cat) => (
-                  <div key={cat}>
-                    <p className="font-display font-semibold text-secondary mb-2">{cat}</p>
-                    <div className="pl-4 space-y-4">
-                      {Object.entries(CATEGORIES[cat]).map(([group, items]) => (
-                        <div key={group}>
-                          <p className="text-[10px] uppercase tracking-widest text-primary-foreground/60 font-semibold mb-1">{group}</p>
-                          <div className="space-y-1">
-                            {items.map((sub) => (
-                              <Link key={sub} to={`/products?category=${encodeURIComponent(cat)}&sub=${encodeURIComponent(sub)}`} className="block py-1 text-sm text-primary-foreground/80 hover:text-secondary transition-colors">
-                                {sub}
-                              </Link>
-                            ))}
+              <div className="flex-1 overflow-y-auto pr-2 scrollbar-hide">
+                <nav className="mt-6 space-y-6 pb-8">
+                  {(Object.keys(CATEGORIES) as MainCategory[]).map((cat) => (
+                    <div key={cat}>
+                      <p className="font-display font-semibold text-secondary mb-2">{cat}</p>
+                      <div className="pl-4 space-y-4">
+                        {Object.entries(CATEGORIES[cat]).map(([group, items]) => (
+                          <div key={group}>
+                            <p className="text-[10px] uppercase tracking-widest text-primary-foreground/60 font-semibold mb-1">{group}</p>
+                            <div className="space-y-1">
+                              {items.map((sub) => (
+                                <Link key={sub} to={`/products?category=${encodeURIComponent(cat)}&sub=${encodeURIComponent(sub)}`} className="block py-1 text-sm text-primary-foreground/80 hover:text-secondary transition-colors">
+                                  {sub}
+                                </Link>
+                              ))}
+                            </div>
                           </div>
-                        </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  <div>
+                    <p className="font-display font-semibold text-secondary mb-2">Collections</p>
+                    <div className="pl-4 space-y-1">
+                      {COLLECTIONS.map((col) => (
+                        <Link key={col} to={`/products?collection=${encodeURIComponent(col)}`} className="block py-1 text-sm text-primary-foreground/80 hover:text-secondary transition-colors">
+                          {col}
+                        </Link>
                       ))}
                     </div>
                   </div>
-                ))}
-                <div>
-                  <p className="font-display font-semibold text-secondary mb-2">Collections</p>
-                  <div className="pl-4 space-y-1">
-                    {COLLECTIONS.map((col) => (
-                      <Link key={col} to={`/products?collection=${encodeURIComponent(col)}`} className="block py-1 text-sm text-primary-foreground/80 hover:text-secondary transition-colors">
-                        {col}
-                      </Link>
-                    ))}
+                </nav>
+              </div>
+
+              {/* Bottom Auth Section */}
+              <div className="mt-auto pt-6 border-t border-primary-foreground/10">
+                {isAuthenticated() ? (
+                  <div className="space-y-2">
+                    <Link to="/account" className="flex items-center gap-3 py-3 px-4 rounded-xl bg-primary-foreground/5 text-sm font-medium text-primary-foreground hover:bg-primary-foreground/10 transition-all">
+                      <User className="h-5 w-5 text-secondary" />
+                      <div className="flex flex-col">
+                        <span className="text-xs text-primary-foreground/60 font-normal">Welcome back,</span>
+                        <span className="truncate max-w-[180px]">
+                          {(getIdTokenClaims()?.["name"] as string) || (getIdTokenClaims()?.["email"] as string) || "Account"}
+                        </span>
+                      </div>
+                    </Link>
+                    <button onClick={() => logout("/")} className="flex items-center gap-3 py-3 px-4 w-full text-left text-sm font-medium text-primary-foreground/60 hover:text-secondary transition-colors">
+                      <LogOut className="h-4 w-4" />
+                      Sign out
+                    </button>
                   </div>
-                </div>
-              </nav>
+                ) : (
+                  <Link to="/login" className="flex items-center justify-between py-4 px-4 rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-all group">
+                    <div className="flex items-center gap-3">
+                      <User className="h-5 w-5" />
+                      <span className="font-semibold">Log in</span>
+                    </div>
+                    <ChevronDown className="h-4 w-4 -rotate-90 opacity-60 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                )}
+              </div>
             </SheetContent>
           </Sheet>
 
@@ -181,7 +195,7 @@ export function Navbar() {
               </Button>
             )}
             {isAuthenticated() ? (
-              <>
+              <div className="hidden lg:flex items-center gap-2">
                 <Link to="/account">
                   <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10" title={(getIdTokenClaims()?.["name"] as string) || (getIdTokenClaims()?.["email"] as string) || "Account"}>
                     <User className="h-5 w-5" />
@@ -190,10 +204,10 @@ export function Navbar() {
                 <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10" onClick={() => logout("/")} title="Sign out">
                   <LogOut className="h-5 w-5" />
                 </Button>
-              </>
+              </div>
             ) : (
-              <Link to="/login">
-                <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10" title="Sign in / Sign up">
+              <Link to="/login" className="hidden lg:block">
+                <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10" title="Log in">
                   <User className="h-5 w-5" />
                 </Button>
               </Link>

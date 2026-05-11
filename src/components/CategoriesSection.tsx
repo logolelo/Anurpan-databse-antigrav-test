@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { CATEGORIES, type MainCategory } from '@/lib/constants';
 import { useAllProducts } from '@/hooks/useProducts';
 import { Loader2, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { ProductRow } from '@/components/ProductRow';
 import useEmblaCarousel from 'embla-carousel-react';
 
@@ -117,24 +118,30 @@ export function CategoriesSection() {
                 />
               ) : (
                 <div className="container mx-auto px-4 py-16">
-                  <div className="flex items-end justify-between mb-4">
-                    <h3 className="font-display text-xl lg:text-2xl font-bold text-foreground">
+                  <div className="flex flex-col items-center mb-8">
+                    <h3 className="font-display text-2xl lg:text-3xl font-bold text-foreground mb-4">
                       {selectedCategory} — {selectedSub}
                     </h3>
-                    <Link
-                      to={`/products?category=${encodeURIComponent(selectedCategory)}&sub=${encodeURIComponent(selectedSub)}`}
-                      className="text-primary font-medium"
-                    >
-                      View More →
-                    </Link>
                   </div>
-                  <div className="min-h-[320px] lg:min-h-[380px] flex items-center justify-center border rounded-3xl bg-muted/30">
+                  <div className="min-h-[320px] lg:min-h-[380px] flex items-center justify-center border rounded-3xl bg-muted/30 mb-8">
                     <div className="text-center">
                       <Sparkles className="mx-auto h-6 w-6 text-secondary mb-2" />
                       <p className="text-sm text-muted-foreground">
                         No items found for <span className="font-semibold">{selectedCategory} — {selectedSub}</span>. Try another type.
                       </p>
                     </div>
+                  </div>
+                  <div className="flex justify-center">
+                    <Link
+                      to={`/products?category=${encodeURIComponent(selectedCategory)}&sub=${encodeURIComponent(selectedSub)}`}
+                    >
+                      <Button 
+                        variant="outline" 
+                        className="rounded-full px-8 py-6 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 font-semibold"
+                      >
+                        Explore all {selectedSub}
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               )}

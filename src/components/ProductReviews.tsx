@@ -243,7 +243,7 @@ export const ProductReviews = ({ productId }: { productId: string }) => {
       ) : reviews.length > 0 ? (
         <div className="space-y-6">
           {reviews.map((review) => (
-            <div key={review.id} className="border border-border rounded-2xl p-6 bg-card transition-all hover:shadow-md">
+            <div key={review.id} className="border border-border rounded-2xl p-6 bg-card">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-1">
